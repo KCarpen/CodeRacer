@@ -92,5 +92,5 @@ const CodeSnippet = props => {
     )
   }
 }
-// random comment
+
 export default CodeSnippet;
