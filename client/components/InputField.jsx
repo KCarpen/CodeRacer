@@ -49,7 +49,7 @@ const InputField = props => {
     // Sent to userController
   const resetState = () => {
     console.log("this is our final", wordsPerMinute);
-    setStartTime(0);.
+    setStartTime(0);
     setCompletedWords([]);
     setSnippetSpace([]);
     setSnippetProp('');
