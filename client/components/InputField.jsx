@@ -1,6 +1,7 @@
 import React, { Component, useState, useEffect, useRef } from 'react';
 import Results from './Results.jsx'
-
+import io from 'socket.io-client';
+const socket = io('localhost:3000');
 
 // calculatewpm = (typedCharacters/5) / endTime-startTime          *          60seconds / endTime-startTime
 
@@ -17,6 +18,9 @@ const InputField = props => {
   const [activeCountDown, setActiveCountDown] = useState(false);
   const [wpmResults, setWpmResults] = useState({});
 
+  socket.on();
+
+  
 
 
   // this is a custom made hook to allow the use of setInterval,
