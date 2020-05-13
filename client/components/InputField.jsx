@@ -6,15 +6,17 @@ import Results from './Results.jsx'
 
 const InputField = props => {
   // I know I know. Why not use Redux? Because.
-  //lots of hooks and lends to some back and forth messiness, good refactor opportunity probably?
+  // lots of hooks and lends to some back and forth messiness, good refactor opportunity probably?
+
+  // If it includes "snippet" or "span", replace. -g
   const [startTime, setStartTime] = useState(0);
   const [wordsPerMinute, setWordsPerMinute] = useState(0);
-  const [completedWords, setCompletedWords] = useState([]);
-  const [snippetSpace, setSnippetSpace] = useState([]);
-  const [snippetProp, setSnippetProp] = useState('');
-  const [countDown, setCountDown] = useState(5);
-  const [raceStarted, setRaceStarted] = useState(false);
-  const [activeCountDown, setActiveCountDown] = useState(false);
+  const [completedWords, setCompletedWords] = useState([]); // wont change
+  const [snippetSpace, setSnippetSpace] = useState([]); // wont change
+  const [snippetProp, setSnippetProp] = useState(''); // wont change
+  const [countDown, setCountDown] = useState(5); // wont change
+  const [raceStarted, setRaceStarted] = useState(false); // wont change
+  const [activeCountDown, setActiveCountDown] = useState(false); // wont change
   const [wpmResults, setWpmResults] = useState({});
 
 
@@ -47,7 +49,7 @@ const InputField = props => {
     // Sent to userController
   const resetState = () => {
     console.log("this is our final", wordsPerMinute);
-    setStartTime(0);
+    setStartTime(0);.
     setCompletedWords([]);
     setSnippetSpace([]);
     setSnippetProp('');
@@ -64,6 +66,7 @@ const InputField = props => {
       headers: {
         'Content-Type': 'application/json'
       },
+      // replace snippet with username
       body: JSON.stringify({wordsPerMinute: wordsPerMinute, snippet_id: props.content.snippet_id})
     })
     .then((response) => response.json())
@@ -82,8 +85,6 @@ const InputField = props => {
       props.giveInputValue('')
     }
   }
-
- 
 
  // this is needed to ensure that if the content of the code snippet changes that the appropriate props are updated.
   useEffect(() => {
@@ -190,7 +191,8 @@ const InputField = props => {
       let elapsedTime = Date.now() - startTime;
       let minute = 60000;
       let wpm = (words * minute) / elapsedTime;
-      setWordsPerMinute((wpm.toFixed(2)));
+      // setWordsPerMinute((wpm.toFixed(2)));
+      props.sendPlayersWPM((wpm.toFixed(2)));
     }
   }
 

@@ -1,18 +1,35 @@
 const express = require('express');
 const path = require('path');
 const cookieparser = require('cookie-parser')
+const socket = require('socket.io');
 
 const app = express();
 
-const oauthController = require('./controllers/oauthController')
-const sessionController = require('./controllers/sessionController')
-const cookieController = require('./controllers/cookieController')
-const userController = require('./controllers/userController')
+const oauthController = require('./controllers/oauthController');
+const sessionController = require('./controllers/sessionController');
+const cookieController = require('./controllers/cookieController');
+const userController = require('./controllers/userController');
 const PORT = 3000;
-const apiRouter = require('./routes/api')
+const apiRouter = require('./routes/api');
+
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 app.use(cookieparser());
+
+const server = app.listen(PORT, () => console.log('listening on port 3000'))
+const io = socket(server);
+
+io.on('connection', (socket) => {
+  console.log('socket connection made!', socket.id);
+  socket.emit('my socketId', socket.id);
+
+  socket.on('newWPM', (newWPM) => {
+    console.log(newWPM);
+    socket.broadcast.emit('newScores', newWPM);
+  })
+
+  socket.on('disconnect', () => console.log('user disconnected!'));
+})
 
 // boiler plate to get everything working.
 
@@ -76,6 +93,4 @@ app.use(function(err, req, res, next) {
   res.status(errorObj.status).send(JSON.stringify(errorObj.message))
 })
   
-  
-app.listen(PORT, ()=> console.log('listening on port 3000'))
 module.exports = app;
