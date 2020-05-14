@@ -33,7 +33,7 @@ userController.loginUser = (req, res, next) => {
   User.findOne({username}, (err, user) => {
     if(!err) {
       shady(password, user['hashedPassword']).then(legit => {
-        if(legit){
+        if(legit === true){
           console.log("Too legit to quit.")
           res.locals.user = user;
           return next();
@@ -41,7 +41,7 @@ userController.loginUser = (req, res, next) => {
           return next({
             log: 'Username and password do not match',
             status: 401,
-            err: { err },
+            err: legit,
           });
         }
       });
@@ -49,7 +49,7 @@ userController.loginUser = (req, res, next) => {
       return next({
         log: 'Username does not exist/Could not locate user',
         status: 406,
-        err: { err },
+        err: err,
       });
     }
   });

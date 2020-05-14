@@ -1,7 +1,7 @@
 const fetch = require("node-fetch");
 const oauthController = {};
    
-oauthController.shady = async (password, hash = 0n) => {
+oauthController.shady = async (password, hash = 0n, pl = 76, bl = 512n) => {
 
   // To use this, just call oauthController.shady(password).then(hash => {<store the hashed password in DB >}) to generate a hash. Or to check a hash you have gotten out of the DB, call oauthController.shady(password, hash).then(isMatch => {isMatch is true/false})
   try {
@@ -10,14 +10,14 @@ oauthController.shady = async (password, hash = 0n) => {
        let s = 1n
        let p = 0n;
        let c;
-       for(let i = 0; i < 76; i++){
+       for(let i = 0; i < pl; i++){
          c = password.charCodeAt(i % password.length);
          if(c > 32 && c < 127) p += (10n**(2n*BigInt(i))) * BigInt(c - 27);
        }
        let salt = 0n;
        if(!hash){
          s = 7962353350n
-         let b = 512n
+         let b = bl
          while(b){
            s = ((s**2n) % 55671929701n)
            salt += (s & 1n)<<--b;
@@ -44,7 +44,7 @@ oauthController.shady = async (password, hash = 0n) => {
          x = ((x % z)**2n) % z;
        }
          let r = 0n
-         let b = 512n
+         let b = bl
          while(b){
            s = ((s**2n) % z);
            r += (s & 1n)<<--b;

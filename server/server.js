@@ -61,19 +61,43 @@ app.get('/callback',
 });
 
 // end of production mode stuff.
-app.get('/', (req, res) => {
+// app.get('/', sessionController.verify, (req, res) => {
+//   console.log("did we get into main route?")
+//   res.status(200).sendFile(path.resolve(__dirname, '../index.html'));
+// })
+
+// // used to check the user's JWT.
+// app.get('/game', sessionController.verify, (req, res, next) => { 
+//   console.log("did we get into the /game route?")
+//   console.log("response cookies", req.cookies.ssid)
+//   res.status(200).sendFile(path.resolve(__dirname, '../index.html'));
+// })
+
+// app.get('/verify', sessionController.verify, 
+// // userController.loginUser, 
+// (req, res, next) => {
+//   console.log("do we verify???");
+//   console.log('response cookies', req.cookies)
+//   res.redirect(301, '/game');
+// })
+
+app.get('/', sessionController.verify, (req, res, next) => {
+  console.log("in main route", "logged in =", res.locals.logged)
   res.status(200).sendFile(path.resolve(__dirname, '../index.html'));
 })
 
 // used to check the user's JWT.
-app.get('/game', (req, res) => {
+app.get('/game', sessionController.verify, (req, res, next) => { 
+  console.log("in game route", "logged in =", res.locals.logged)
+  console.log("response cookies", req.cookies.ssid)
   res.status(200).sendFile(path.resolve(__dirname, '../index.html'));
 })
 
 app.get('/verify', sessionController.verify, 
 // userController.loginUser, 
 (req, res, next) => {
-  console.log("do we verify???");
+  console.log("in verify route", "logged in =", res.locals.logged)
+  console.log('response cookies', req.cookies)
   res.redirect(301, '/game');
 })
 
