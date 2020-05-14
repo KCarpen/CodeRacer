@@ -136,10 +136,6 @@ class MainContainer extends Component {
     this.setState({ categories : categoryArray });
   }
 
-  resetMainState(){
-    this.setState({ completedWords : []});
-  }
-
   changeSnippet(object){
     if (this.state.incomplete){
       this.setState(object);
@@ -195,7 +191,6 @@ class MainContainer extends Component {
               updatePlayersWPM = {this.updatePlayersWPM}
               sendPlayersWPM = {(wpm) => this.sendPlayersWPM(wpm)}
               updateContentWords = {this.updateContentWords}
-              resetMainState = {this.resetMainState}
             />
       </div>
     )

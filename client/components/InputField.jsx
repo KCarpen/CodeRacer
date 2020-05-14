@@ -55,27 +55,26 @@ const InputField = props => {
     // setSnippetProp('');
     setRaceStarted(false);
     setCountDown(5);
-    props.resetMainState();
     props.startRace();
     props.giveCompletedWords([]);
     props.changeSnippet('');
     // console.log('You win!')
     document.getElementById('timer').innerHTML= 'FINISHED';
     // console.log("this is our full props.content", props.content)
-    fetch(`/api/highScore`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      // replace snippet with username
-      body: JSON.stringify({wordsPerMinute: wordsPerMinute, snippet_id: props.content.snippet_id})
-    })
-    .then((response) => response.json())
-    .then((response) => {
-      setWordsPerMinute(0)
-      //response has keys message, wpm
-      setWpmResults(response)
-    })
+    // fetch(`/api/highScore`, {
+    //   method: 'POST',
+    //   headers: {
+    //     'Content-Type': 'application/json'
+    //   },
+    //   // replace snippet with username
+    //   body: JSON.stringify({wordsPerMinute: wordsPerMinute, snippet_id: props.content.snippet_id})
+    // })
+    // .then((response) => response.json())
+    // .then((response) => {
+    //   setWordsPerMinute(0)
+    //   //response has keys message, wpm
+    //   setWpmResults(response)
+    // })
   }
 
 
@@ -116,35 +115,55 @@ const InputField = props => {
     let completedChars = props.complete;
 
     if (event.target.value === '') return;
+    // backspace logic
+    // console.log('EVERYTHING I TYPED ', event.target.value);
+    console.log("LENGTH AFTER BACKSPACE ", event.target.value.length);
+    console.log("COMPLETED CHARS LENGTH ", completedChars.length);
+    console.log("INCORRECT CHARS LENGTH ", incorrectChars.length);
+    console.log("BACKSPACE RETURN VALUE ", event.target.value[event.target.value.length-1] )
+
+    if (event.target.value.length < completedChars.length + incorrectChars.length){
+      console.log('HIT A BACKSPACE');
+      if (incorrectChars.length){
+        const backspacedChar = incorrectChars[incorrectChars.length - 1];
+        incorrectChars = incorrectChars.slice(0, incorrectChars.length - 1);
+        incompletedChars = backspacedChar + incompletedChars;
+      } else {
+        const backspacedChar = completedChars[completedChars.length - 1];
+        completedChars = completedChars.slice(0, completedChars.length - 1);
+        incompletedChars = backspacedChar+ incompletedChars;
+      }
+      // console.log(props.content[0]);
+      if (completedChars === props.content[0].slice(0, completedChars.length)){
+        setIsCorrect(true);
+      }
+      const renderedChars = { complete: completedChars, incorrect: incorrectChars, incomplete: incompletedChars };
+      props.changeSnippet(renderedChars);
+      return
+    }
 
     let currentChar = event.target.value[event.target.value.length-1];
 
     if (isCorrect === true) {
-    if (currentChar !== incompletedChars[0]){
-      setIsCorrect(false);
+      if (currentChar !== incompletedChars[0]){
+        setIsCorrect(false);
+        incorrectChars += incompletedChars[0];
+        incompletedChars = incompletedChars.slice(1);
+      }
+      if (currentChar === incompletedChars[0]){
+        completedChars += currentChar;
+        incompletedChars = incompletedChars.slice(1);
+      }
+    } else {
       incorrectChars += incompletedChars[0];
       incompletedChars = incompletedChars.slice(1);
     }
-    if (currentChar === incompletedChars[0]){
-      completedChars += currentChar;
-      incompletedChars = incompletedChars.slice(1);
-    }
-  } else {
-    incorrectChars += incompletedChars[0];
-    incompletedChars = incompletedChars.slice(1);
-  }
-    const renderedChars = { complete: completedChars, incorrect: incorrectChars, incomplete: incompletedChars };
-    props.changeSnippet(renderedChars);
+      const renderedChars = { complete: completedChars, incorrect: incorrectChars, incomplete: incompletedChars };
+      props.changeSnippet(renderedChars);
 
-    if (currentChar === ' ') {
-
-    }
-
-    // backspace logic
-    let key = event.keyCode || event.charCode;
-    if (key === 8 || key === 46){
-
-    }
+    // if (completedChars === props.content[0]){
+    //   return resetState();
+    // }
   }
 
 
@@ -281,10 +300,13 @@ const InputField = props => {
           newCheckForErrors(modifiedEvent);  
           calculateWPM(e); 
           }}
-        onKeyDown={(e) => {
-          console.log('onKEYDOWN value', e.target.value[e.target.value.length-1]);
-          console.log('onKEYDOWN code', e.keyCode)
-        }} 
+        // onKeyDown={(e) => {
+        //   const modifiedEvent = isRaceOn(e);
+        //   newCheckForErrors(modifiedEvent);
+        //   calculateWPM(e);
+        //   // console.log('onKEYDOWN value', e.target.value[e.target.value.length-1]);
+        //   // console.log('onKEYDOWN code', e.keyCode);
+        // }} 
           >
       </textarea>)
   } else {
