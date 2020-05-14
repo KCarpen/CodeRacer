@@ -7,7 +7,8 @@ const CodeSnippet = props => {
   // const [currentWordCheck,setCurrentWord] = useState(0);
   // const [currentIndex,setCurrentIndex] = useState(0);
   // const [completedPortion,setCompletedPortion] = useState('')
-
+  // const typed = props.completedWords.join(' ');
+  // console.log(typed);
   // If the user hasn't selected a category, render this:
   if (Object.keys(props.content).length === 0) {
     return (
@@ -25,6 +26,7 @@ const CodeSnippet = props => {
         
         <div id="snippet">
           <span className="complete, green">{props.complete}</span>
+          <span className="incorrect, red">{props.incorrect}</span>
           <span className="incomplete">{props.incomplete}</span>
         </div>
   
