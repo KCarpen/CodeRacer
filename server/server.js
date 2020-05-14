@@ -3,6 +3,7 @@ const path = require('path');
 const cookieparser = require('cookie-parser')
 const socket = require('socket.io');
 
+
 const app = express();
 
 // const oauthController = require('./controllers/oauthController');
@@ -18,6 +19,7 @@ app.use(express.urlencoded({ extended: true }))
 app.use(cookieparser());
 
 const server = app.listen(PORT, () => console.log('listening on port 3000'));
+
 const io = socket(server);
 
 io.on('connection', socket => {
