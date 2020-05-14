@@ -8,7 +8,8 @@ module.exports = {
       proxy: {
         '/callback': 'http://localhost:3000',
         '/api': 'http://localhost:3000',
-        '/verify':'http://localhost:3000'
+        '/verify':'http://localhost:3000',
+        '/game': 'http://localhost:3000'
       },
       port: 8080,
       hot: true,

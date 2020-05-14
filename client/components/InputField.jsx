@@ -19,8 +19,6 @@ const InputField = props => {
   const [activeCountDown, setActiveCountDown] = useState(false); // wont change
   const [wpmResults, setWpmResults] = useState({});
 
-
-
   // this is a custom made hook to allow the use of setInterval,
   // check the blog post of Dan Abramov about this for more info
   // https://overreacted.io/making-setinterval-declarative-with-react-hooks/
@@ -88,20 +86,21 @@ const InputField = props => {
 
  // this is needed to ensure that if the content of the code snippet changes that the appropriate props are updated.
   useEffect(() => {
-    if (snippetSpace.length === 0 && props.content.content) {
-      setSnippetSpace(space=>space=props.content.content.trim().split(/[ \t]+/));
-      setSnippetProp(snip => snip = props.content.content );
+    console.log('props content', props.content)
+    if (snippetSpace.length === 0 && props.content[0]) {
+      setSnippetSpace(space=>space=props.content[0].trim().split(/[ \t]+/));
+      setSnippetProp(snip => snip = props.content[0] );
     }
   })
   
 
   // Lets you change category after you already selected one and changes the state accordingly
   if (props.content.content) {
-    // console.log('snippetSpace', snippetSpace)
+    console.log('snippetSpace', snippetSpace)
     // console.log('split contents', props.content.content.split(' '))
-    if (snippetProp != props.content.content) {
-      setSnippetSpace(space=>space=props.content.content.trim().split(/[ \t]+/));
-      setSnippetProp(snip => snip = props.content.content);
+    if (snippetProp != props.content[0]) {
+      setSnippetSpace(space=>space=props.content[0].trim().split(/[ \t]+/));
+      setSnippetProp(snip => snip = props.content[0]);
     }
   }
 
@@ -224,12 +223,14 @@ const InputField = props => {
   // If there is a snippet, lets you actually type in the textarea, otherwise, it's just an empty box that does nothing onclick
   let textArea;
   if (snippetProp.length) {
-    textArea = (<textarea id='textInput' placeholder="Click Here to Start The CODERACE"
-    onFocus ={beginCountdown} 
-    onInput={(e)=> { checkForErrors(e);  calculateWPM(e); isRaceOn(e)}} 
-    ></textarea>)
-  }
-  else {
+    textArea = (
+      <textarea 
+        id='textInput' 
+        placeholder="Click Here to Start The CODERACE"
+        onFocus ={beginCountdown} 
+        onInput={(e)=> { checkForErrors(e);  calculateWPM(e); isRaceOn(e)}}>
+      </textarea>)
+  } else {
     textArea = (<textarea id='textInput' placeholder="You need a code snippet to race" disabled></textarea>)
   }
 
@@ -240,10 +241,10 @@ const InputField = props => {
 
       <p id='currentWPM'>
         {/* Current WPM */}
-        current WPM: {wordsPerMinute}
+        current WPM: {props.wpm}
       </p>
   
-        < Results finishedWPM = {wpmResults} content={ props.content } />
+        <Results finishedWPM={wpmResults} content={ props.content } />
 
     </div>
   )
