@@ -1,6 +1,7 @@
 import React, { Component, useState, useEffect } from 'react';
 import LoginContainer from './container/loginContainer.jsx';
-import MainContainer from './container/MainContainer.jsx'
+import MainContainer from './container/MainContainer.jsx';
+import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 
 const App = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -20,22 +21,17 @@ const App = () => {
 
   // If the user is successfully logged in: show main page
   // If not, show login page
-  if (isLoggedIn) {
+  // if(0){
     return (
+      <Router>
       <div className='containers'>
-        
-        < MainContainer />
-  
+        <Switch>
+          <Route exact path="/" component={LoginContainer} />
+          <Route exact path="/game" component={MainContainer} />
+        </Switch>
       </div>
+      </Router>
     )
-  } else {
-    return (
-    <div className='containers'>
-
-      < LoginContainer />
-    
-    </div>
-  )}
 }
 
 export default App;

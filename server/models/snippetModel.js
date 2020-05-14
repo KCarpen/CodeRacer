@@ -1,3 +1,6 @@
+// STAB RABBIT NOTE:
+// Fil will soon be deleted and replaced with MongoDB model
+
 const { Pool } = require('pg');
 //setting up our postgres SQL DB the same way as the DB unit
 const PG_URI = 'postgres://rdbpefvt:ap6jLgfucXTv7-txKVehMNOV4ncDO-UE@drona.db.elephantsql.com:5432/rdbpefvt';

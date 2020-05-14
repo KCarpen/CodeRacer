@@ -16,7 +16,7 @@ const Results = props => {
   // Text is set to empty string if no category is selected
   let explanationText = ''
   // If this prop exists(activated when a category is selected by passing a prop down), show the function of the snippet
-  if (props.content.meaning) {
+  if (props.content[1]) {
     explanationText = "Your Snippet's Function is:"
   }
   
@@ -36,7 +36,7 @@ const Results = props => {
         {explanationText}
         <p id='codeExplanation'>
           {/* What the code that you typed does */}
-         { props.content.meaning }
+         { props.content[1] }
         </p>
       </div>
 
