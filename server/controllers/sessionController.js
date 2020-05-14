@@ -11,7 +11,7 @@ sessionController.createSession = (req, res, next) => {
   return next();
 }
 
-//verfies that the jwt within our cookies matches and if so stores the user's information to res.locals
+//verfies that the ojwt within our cookies matches and if so stores the user's information to res.locals
 sessionController.verify = (req, res, next) => {
   // console.log('we are in the sessionController.verify')
   jwt.verify(req.cookies.ssid, secret, (err, result) => {
@@ -20,6 +20,7 @@ sessionController.verify = (req, res, next) => {
     } else {
       res.locals.verifiedjwt = result;
       // console.log('getting through verify middleware')
+      // res.locals.bullshit = {username: "Jack", password: "passw0rd"};
       return next();
     }
   })
