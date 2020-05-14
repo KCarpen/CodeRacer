@@ -18,10 +18,12 @@ userController.createUser = (req, res, next) => {
       User.create({username, hashedPassword}, (err, user) => {
         if (err) {
           console.log("error in createUser: ", err)
-          return res.status(418).send('Did not successfully create user.');}
+          return res.redirect('/')
           // saved!
+        }
         res.locals.user = user;
-        console.log(user)
+        res.locals.create = true;
+        console.log("SUCCESS, made user", res.locals.user)
         return next();
       });
     });
@@ -33,24 +35,19 @@ userController.loginUser = (req, res, next) => {
   User.findOne({username}, (err, user) => {
     if(!err) {
       shady(password, user['hashedPassword']).then(legit => {
-        if(legit){
+        if(legit === true){
           console.log("Too legit to quit.")
           res.locals.user = user;
+          res.locals.create = true;
           return next();
         } else {
-          return next({
-            log: 'Username and password do not match',
-            status: 401,
-            err: { err },
-          });
+          console.log("password correct:", legit, "You acting kind of shady, and calling me baby.")
+          return res.redirect('/')
         }
       });
     } else {
-      return next({
-        log: 'Username does not exist/Could not locate user',
-        status: 406,
-        err: { err },
-      });
+      console.log("Error in userController.loginUser", err)
+      res.redirect('/')
     }
   });
 };
