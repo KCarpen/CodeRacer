@@ -2,7 +2,9 @@ import React, { Component, useState, useEffect } from 'react';
 import NavBar from '../components/NavBar.jsx'
 import InputField from '../components/InputField.jsx'
 import CodeSnippet from '../components/CodeSnippet.jsx'
+import PlayerProgress from '../components/PlayerProgress.jsx'
 import io from 'socket.io-client';
+import snippets from '../../server/models/snippet.js'
 
 const socket = io('http://localhost:3000');
 
@@ -11,51 +13,51 @@ class MainContainer extends Component {
     super(props);
     this.state = {
       categories: [],
-      content: {},
-      currentSnippet: '',
+      content: [],
+      wordsOfContent: [],
       inputValue : '',
       completedWords: [],
       hasRace: false,
       raceFinished: true,
       playersWPM : {},
-      playerId: ''
+      playerId: '',
+      incomplete: '',
+      complete: '',
+      incorrect: '',
+
     }
-    // scores = { socket.id = newWPM }
+    // scores = { socket.id : newWPM }
     socket.on('newScores', scores => {
       // update scores
       this.updatePlayersWPM(scores);
     });
 
-    socket.on('my socketId', socketId => {
+    socket.on('mySocketId', socketId => {
+      console.log('my socket id', socketId);
       this.setPlayerId(socketId);
-    })
+    });
 
     this.handleClick = this.handleClick.bind(this)
-    this.giveInputValue = this.giveInputValue.bind(this)
+    // this.giveInputValue = this.giveInputValue.bind(this)
     this.giveCompletedWords = this.giveCompletedWords.bind(this)
     this.startRace = this.startRace.bind(this)
     this.raceFinished = this.raceFinished.bind(this)
     this.updatePlayersWPM = this.updatePlayersWPM.bind(this);
     this.setPlayerId = this.setPlayerId.bind(this);
     this.sendPlayersWPM = this.sendPlayersWPM.bind(this);
+    this.updateContentWords = this.updateContentWords.bind(this);
   }
 
   // update state to reflect the players socket Id
   setPlayerId(socketId) {
     console.log("passed socketId in setplayerid = ", socketId)
-    // this.setState({...this.state, playerId : socketId});
-    // newState['playerId'] = socketId
-    // this.setState(state => {
-    //   const newState = JSON.parse(JSON.stringify(state));
-    //   newState.playerId = socketId;
-    //   return newState;
-    // })
-    const newState = {...this.state}
-    newState.playerId = socketId
-    this.setState(newState)
+    const newState = {...this.state};
+    newState.playerId = socketId;
+    this.setState(newState);
+    this.sendPlayersWPM('0.00');
   }
 
-  // scores = { socket.id = newWPM }
+  // scores = { socket.id : newWPM }
   // build function to update playersWPM
   updatePlayersWPM(scores){
     const oldPlayersWPM = {...this.state.playersWPM};
@@ -80,9 +82,17 @@ class MainContainer extends Component {
     this.setState({hasRace: !this.state.hasRace})
   }
 
-  giveInputValue(inputValue) {
-    this.setState({inputValue: inputValue})
-  }
+//   giveInputValue(inputValue) {
+//     // console.log('inputValue', inputValue);
+//     // console.log(this.state);
+//     if (this.state.incomplete.length) {
+//     this.setState({
+//       inputValue: inputValue, 
+//       complete: this.state.complete + this.state.incomplete[0],
+//       incomplete: this.state.incomplete.slice(1)
+//     })
+//   }  
+// }
 
   giveCompletedWords(completedWords) {
     this.setState({completedWords: completedWords})
@@ -93,28 +103,43 @@ class MainContainer extends Component {
     this.setState({hasRace: !this.state.hasRace})
   }
 
+  updateContentWords(words) {
+    this.setState({wordsOfContent: [...words]})
+  }
+
   // Loads all snippets of the category and randomly chooses one, also has properties other than the actual snippet (its meaning, category, max_time)
-  handleClick(endpoint) {
-    fetch(`/api/${endpoint}`)
-      .then(snippet => snippet.json())
-      // .then(json => console.log(json))
-      .then(snippets => {
-        const chosenSnippet = snippets[Math.floor(Math.random() * snippets.length)];
-        //console.log(chosenSnippet)
-        this.setState({ content: chosenSnippet })
-      })
+  // NEW HANDLE CLICK
+  handleClick(category){
+    const length = snippets[category].length;
+    const chosenSnippet = snippets[category][Math.floor(Math.random() * length)];
+    console.log('chosenSnippet first element before regex: ', chosenSnippet[0]);
+    chosenSnippet[0] = chosenSnippet[0].replace(/\n/g, '')
+    console.log('chosenSnippet first element after regex: ', chosenSnippet[0]);
+    const splitContent = chosenSnippet[0].trim().split(/[ \t]+/)
+    this.setState({ content : chosenSnippet, incomplete: chosenSnippet[0], wordsOfContent : splitContent });
   }
 
   // Shows the categories after the component is mounted
-  componentDidMount() {
-    fetch(`/api/`)
-      .then(category => category.json())
-      .then(response => {
-        const categoryArray = response.map(element => {
-          return element.category
-        });
-        this.setState({ categories: categoryArray })
-      })
+  // componentDidMount() {
+  //   fetch(`/api/`)
+  //     .then(category => category.json())
+  //     .then(response => {
+  //       const categoryArray = response.map(element => {
+  //         return element.category
+  //       });
+  //       this.setState({ categories: categoryArray })
+  //     })
+  // }
+
+  componentDidMount(){
+    const categoryArray = Object.keys(snippets);
+    this.setState({ categories : categoryArray });
+  }
+
+  changeSnippet(object){
+    if (this.state.incomplete){
+      this.setState(object);
+    }
   }
 
   render() {
@@ -127,22 +152,45 @@ class MainContainer extends Component {
               categories ={ this.state.categories } 
               handleClick={ this.handleClick }
             />
+
+          < PlayerProgress 
+              playersWPM={this.state.playersWPM}
+            />  
   
           < CodeSnippet
               playerId = {this.state.playerId} 
               content={ this.state.content } 
               inputValue = {this.state.inputValue} 
+              complete = {this.state.complete} 
+              incomplete = {this.state.incomplete}
+              incorrect = {this.state.incorrect}
               completedWords = {this.state.completedWords}
             />
+          
+          {/* < CodeDisplay 
+            playerId = {this.state.playerId} 
+            content={ this.state.content } 
+            complete = {this.state.complete} 
+            incomplete = {this.state.incomplete}
+            completedWords = {this.state.completedWords}
+          /> */}
   
           < InputField 
               playerId = {this.state.playerId}
+              wpm = {this.state.playersWPM[this.state.playerId]}
               content={this.state.content}
+              complete={this.state.complete}
+              incomplete={this.state.incomplete}
+              incorrect={this.state.incorrect}
+              changeSnippet={(object) => this.changeSnippet(object)}
+              wordsOfContent={this.state.wordsOfContent}
+              completedWords={this.state.completedWords}
               giveCompletedWords = {this.giveCompletedWords}
               giveInputValue = {this.giveInputValue}
               startRace = {this.startRace}
               updatePlayersWPM = {this.updatePlayersWPM}
               sendPlayersWPM = {(wpm) => this.sendPlayersWPM(wpm)}
+              updateContentWords = {this.updateContentWords}
             />
       </div>
     )

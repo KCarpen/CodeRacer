@@ -25,7 +25,7 @@ snippetController.getSnippet = (req, res, next) => {
       // console.log('errorin snippet query:', err)
       return next(err);
     }
-    console.log(data.rows)
+    // console.log(data.rows)
     res.locals.snippet = data.rows;
     return next();
   })
