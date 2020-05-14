@@ -2,6 +2,7 @@ import React, { Component, useState, useEffect } from 'react';
 import NavBar from '../components/NavBar.jsx'
 import InputField from '../components/InputField.jsx'
 import CodeSnippet from '../components/CodeSnippet.jsx'
+import CodeDisplay from '../components/CodeDisplay.jsx'
 import io from 'socket.io-client';
 
 const socket = io('http://localhost:3000');
@@ -18,7 +19,10 @@ class MainContainer extends Component {
       hasRace: false,
       raceFinished: true,
       playersWPM : {},
-      playerId: ''
+      playerId: '',
+      incomplete: '',
+      complete: ''
+
     }
     // scores = { socket.id = newWPM }
     socket.on('newScores', scores => {
@@ -68,7 +72,7 @@ class MainContainer extends Component {
     const newPlayersWPM = { ...this.state.playersWPM};
     newPlayersWPM[this.state.playerId] = wpm;
     this.setState({ playersWPM : newPlayersWPM });
-    // console.log("We are here, this is our state: ", JSON.stringify(this.state))
+    console.log("We are here, this is our state: ", JSON.stringify(this.state))
     const socketId = this.state.playerId;
     const newWPM = {};
     newWPM[socketId] = wpm;
@@ -81,7 +85,14 @@ class MainContainer extends Component {
   }
 
   giveInputValue(inputValue) {
-    this.setState({inputValue: inputValue})
+    console.log(inputValue);
+    if (this.state.incomplete.length) {
+    this.setState({
+      inputValue: inputValue, 
+      complete: this.state.complete + this.state.incomplete[0],
+      incomplete: this.state.incomplete.slice(1)
+    })
+  }
   }
 
   giveCompletedWords(completedWords) {
@@ -100,8 +111,8 @@ class MainContainer extends Component {
       // .then(json => console.log(json))
       .then(snippets => {
         const chosenSnippet = snippets[Math.floor(Math.random() * snippets.length)];
-        //console.log(chosenSnippet)
-        this.setState({ content: chosenSnippet })
+        console.log(chosenSnippet)
+        this.setState({ content: chosenSnippet, : chosenSnippet.content })
       })
   }
 
@@ -128,15 +139,26 @@ class MainContainer extends Component {
               handleClick={ this.handleClick }
             />
   
-          < CodeSnippet
+          {/* < CodeSnippet
               playerId = {this.state.playerId} 
               content={ this.state.content } 
               inputValue = {this.state.inputValue} 
+              complete = {this.state.complete} 
+              incomplete = {this.state.incomplete}
               completedWords = {this.state.completedWords}
-            />
+            /> */}
+          
+          < CodeDisplay 
+            playerId = {this.state.playerId} 
+            content={ this.state.content } 
+            complete = {this.state.complete} 
+            incomplete = {this.state.incomplete}
+            completedWords = {this.state.completedWords}
+          />
   
           < InputField 
               playerId = {this.state.playerId}
+              wpm = {this.state.playersWPM[this.state.playerId]}
               content={this.state.content}
               giveCompletedWords = {this.giveCompletedWords}
               giveInputValue = {this.giveInputValue}

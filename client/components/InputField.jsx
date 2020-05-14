@@ -101,7 +101,7 @@ const InputField = props => {
 
   // Lets you change category after you already selected one and changes the state accordingly
   if (props.content.content) {
-    // console.log('snippetSpace', snippetSpace)
+    console.log('snippetSpace', snippetSpace)
     // console.log('split contents', props.content.content.split(' '))
     if (snippetProp != props.content.content) {
       setSnippetSpace(space=>space=props.content.content.trim().split(/[ \t]+/));
@@ -122,6 +122,7 @@ const InputField = props => {
 
     // currentWord = array of current snippet words at index 0
     const currentWord = snippetWords[0];
+    console.log('current', currentWord);
     // Gets rid of empty spaces from linebreaks, etc.
     if (currentWord === "" || currentWord === "\n") {
       let finishedWords = [...completedWords , currentWord];
@@ -134,9 +135,9 @@ const InputField = props => {
     }
     // console.log("current word",currentWord)
 
-    ///////////////////////////
-    // Actual functionality is here, checks currently typed word after pressing spacebar
-    /////////////////////////////////////
+    // ///////////////////////////
+    // // Actual functionality is here, checks currently typed word after pressing spacebar
+    // /////////////////////////////////////
 
     if (lastInput === ' ' || lastInput === "\n") {
       // console.log("We got a match")
@@ -186,6 +187,7 @@ const InputField = props => {
 
   //calculates approximate, live wpm
   const calculateWPM = (event) =>{
+    console.log("??")
     if(raceStarted) {
       let inputLength = completedWords.reduce((acc,curr) => {
         acc = acc + curr.length;
@@ -196,6 +198,7 @@ const InputField = props => {
       let minute = 60000;
       let wpm = (words * minute) / elapsedTime;
       // setWordsPerMinute((wpm.toFixed(2)));
+      console.log(wpm);
       props.sendPlayersWPM((wpm.toFixed(2)));
     }
   }
@@ -230,7 +233,12 @@ const InputField = props => {
   if (snippetProp.length) {
     textArea = (<textarea id='textInput' placeholder="Click Here to Start The CODERACE"
     onFocus ={beginCountdown} 
-    onInput={(e)=> { checkForErrors(e);  calculateWPM(e); isRaceOn(e)}} 
+    onInput={(e)=> { 
+      // props.giveInputValue(e); 
+      checkForErrors(e);  
+      calculateWPM(e); 
+      isRaceOn(e)
+    }} 
     ></textarea>)
   }
   else {
@@ -244,7 +252,7 @@ const InputField = props => {
 
       <p id='currentWPM'>
         {/* Current WPM */}
-        current WPM: {wordsPerMinute}
+        current WPM: {props.wpm}
       </p>
   
         < Results finishedWPM = {wpmResults} content={ props.content } />
