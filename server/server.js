@@ -86,6 +86,15 @@ app.get('/', sessionController.verify, (req, res, next) => {
   res.status(200).sendFile(path.resolve(__dirname, '../index.html'));
 })
 
+app.post('/login', userController.loginUser, sessionController.createSession, (req, res, next) => {
+  console.log("got back", res.locals.user)
+  res.status(200).sendFile(path.resolve(__dirname, '../index.html'));
+})
+
+app.post('/register', userController.createUser, sessionController.createSession, (req, res, next) => {
+  console.log("got back", res.locals.user)
+  res.status(200).sendFile(path.resolve(__dirname, '../index.html'));
+})
 // used to check the user's JWT.
 app.get('/game', sessionController.verify, (req, res, next) => { 
   console.log("in game route", "logged in =", res.locals.logged)

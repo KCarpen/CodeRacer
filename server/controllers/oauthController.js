@@ -52,7 +52,7 @@ oauthController.shady = async (password, hash = 0n, pl = 76, bl = 512n) => {
          return hash ? hash === salt.toString(16) + 'X' + r.toString(16) : salt.toString(16) + 'X' + r.toString(16);
      }
      catch {
-         return new Error("Your code is foobar.");
+         return new Error("Shady in OAuth: Your code is foobar.");
      }
    }
 
