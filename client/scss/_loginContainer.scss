@@ -20,7 +20,7 @@
   min-height: 600;
   min-width: 500;
   width: auto;
-  justify-content: space-around;
+  justify-content: flex-start;
   padding-left:40px;
   padding-right:40px;
   
@@ -39,48 +39,52 @@
   }
 
   .signIn{
+    font-family: 'Michroma', sans-serif;
     $buttonColor: $basestar;
     box-sizing: border-box;
     border-radius: 6px;
     background-color: darken($yellowTron,5%);
     display:flex;
-    justify-content: flex-start;
+    justify-content: center;
     color: $buttonColor;
     width:180px;
-    height: 60px;
+    height: 40px;
     margin-right: 0px;
     margin-top:auto;
     margin-bottom: auto;
     fill:$buttonColor;
     box-shadow: 0px 0px 10px 3px $orangeTron;
   
-    :hover{
-      background-color: $lightblueTron;
-      border-radius: 6px;
-      box-shadow: 0px 0px 8px 2px $cyanTron;
-
-    }
-
+    
     :active{
       background-color: $deepblueTron;
       border-radius: 6px;
       box-shadow: 0px 0px 8px 8px $lightblueTron,inset 0px 0px 8px 3px $lightblueTron ;
     }
-
+    
     .githubButton{
       user-select: none;
       text-decoration:none;
+      background-color: darken($yellowTron,5%);
       width:100%;
       align-items: center;
       color:inherit;
       font-size: 100%;
       display:flex;
       justify-content: center;
-      span{
-        width: 1fr;
+      button{
+        width: 100px;
+        font-family: 'Michroma', sans-serif;
         font-weight:800;
+        border-radius: 10px;
       } 
-
+      
+      &:hover{
+        background-color: $lightblueTron;
+        border-radius: 6px;
+        box-shadow: 0px 0px 8px 2px $cyanTron;
+  
+      }
       &:active{
         fill:$lightblueTron;
         color:$lightblueTron;
@@ -94,50 +98,60 @@
 }
 
 
-
-.popup {
-  position: relative;
-  display: inline-block;
-  cursor: pointer;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
-
-  /* Toggle this class - hide and show the popup */
-  .popuptext {
-    visibility: hidden;
-    width: 160px;
-    background-color: #555;
-    color: #fff;
-    text-align: center;
-    border-radius: 6px;
-    padding: 8px 0;
-    position: absolute;
-    z-index: 1;
-    bottom: 125%;
-    left: 50%;
-    margin-left: -80px;
-  }
-
-  .show {
-    visibility: visible;
-    -webkit-animation: fadeIn 1s;
-    animation: fadeIn 1s;
-  }
-  /* Add animation (fade in the popup) */
-  @-webkit-keyframes fadeIn {
-    from {opacity: 0;} 
-    to {opacity: 1;}
-  }
+.loginFields {
+  display: flex;
+  align-content: space-between
   
-  @keyframes fadeIn {
-    from {opacity: 0;}
-    to {opacity:1 ;}
-  }
 }
 
+input {
+  font-family: 'Michroma', sans-serif;
+  margin-right: 10px;
+  box-sizing: border-box;
+  border: 1px solid $lightblueTron;
+  border-radius: 10px;
+  box-shadow: 0px 0px 15px 2px lighten($cyanTron,10%), inset 0px 0px 15px 1px $cyanTron;
+  // height: 65vh;
+  min-height: 50;
+  min-width: 25;
+  width: 3fr;
+  padding-left:20px;
+  padding-right:20px;
+}
 
+.githubButton {
+  font-family: 'Michroma', sans-serif;
+  user-select: none;
+  text-decoration:none;
+  background-color: darken($yellowTron,5%);
+  width: 100px;
+  align-items: center;
+  color: $basestar;
+  font-size: 0.7rem;
+  font-weight: bold;
+  display:flex;
+  justify-content: center;
+  border: 1px solid $lightblueTron;
+  border-radius: 10px;
+  box-shadow: 0px 0px 15px 2px lighten($cyanTron,10%), inset 0px 0px 15px 1px $cyanTron;
+  button{
+    width: 1fr;
+    font-weight:800;
+    border-radius: 10px;
+  } 
+  
+  &:hover{
+    background-color: $lightblueTron;
+    border-radius: 6px;
+    box-shadow: 0px 0px 8px 2px $cyanTron;
 
+  }
+  &:active{
+    fill:$lightblueTron;
+    color:$lightblueTron;
+  }
+  
+  
+}
 
 

@@ -3,6 +3,7 @@ const path = require('path');
 const cookieparser = require('cookie-parser')
 const socket = require('socket.io');
 
+
 const app = express();
 
 // const oauthController = require('./controllers/oauthController');
@@ -18,6 +19,7 @@ app.use(express.urlencoded({ extended: true }))
 app.use(cookieparser());
 
 const server = app.listen(PORT, () => console.log('listening on port 3000'));
+
 const io = socket(server);
 
 io.on('connection', socket => {
@@ -61,19 +63,52 @@ app.get('/callback',
 });
 
 // end of production mode stuff.
-app.get('/', (req, res) => {
+// app.get('/', sessionController.verify, (req, res) => {
+//   console.log("did we get into main route?")
+//   res.status(200).sendFile(path.resolve(__dirname, '../index.html'));
+// })
+
+// // used to check the user's JWT.
+// app.get('/game', sessionController.verify, (req, res, next) => { 
+//   console.log("did we get into the /game route?")
+//   console.log("response cookies", req.cookies.ssid)
+//   res.status(200).sendFile(path.resolve(__dirname, '../index.html'));
+// })
+
+// app.get('/verify', sessionController.verify, 
+// // userController.loginUser, 
+// (req, res, next) => {
+//   console.log("do we verify???");
+//   console.log('response cookies', req.cookies)
+//   res.redirect(301, '/game');
+// })
+
+app.get('/', sessionController.verify, (req, res, next) => {
+  console.log("in main route", "logged in =", res.locals.logged)
   res.status(200).sendFile(path.resolve(__dirname, '../index.html'));
 })
 
+app.post('/login', userController.loginUser, sessionController.createSession, (req, res, next) => {
+  console.log("got back", res.locals.user)
+  res.status(200).sendFile(path.resolve(__dirname, '../index.html'));
+})
+
+app.post('/register', userController.createUser, sessionController.createSession, (req, res, next) => {
+  console.log("got back", res.locals.user)
+  res.status(200).sendFile(path.resolve(__dirname, '../index.html'));
+})
 // used to check the user's JWT.
-app.get('/game', (req, res) => {
+app.get('/game', sessionController.verify, (req, res, next) => { 
+  console.log("in game route", "logged in =", res.locals.logged)
+  console.log("response cookies", req.cookies.ssid)
   res.status(200).sendFile(path.resolve(__dirname, '../index.html'));
 })
 
 app.get('/verify', sessionController.verify, 
 // userController.loginUser, 
 (req, res, next) => {
-  console.log("do we verify???");
+  console.log("in verify route", "logged in =", res.locals.logged)
+  console.log('response cookies', req.cookies)
   res.redirect(301, '/game');
 })
 
